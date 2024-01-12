@@ -48,6 +48,8 @@
 
 #include <functional>
 
+#include <pybind11/pybind11.h>
+
 namespace {
 std::string rosNormalizeName(const std::string& name) {
 	std::string n;
@@ -236,6 +238,8 @@ moveit::core::MoveItErrorCode Task::plan(size_t max_solutions) {
 	auto impl = pimpl();
 	init();
 
+	pybind11::gil_scoped_release release;
+
 	// Print state and return success if there are solutions otherwise the input error_code
 	const auto success_or = [this](const int32_t error_code) -> int32_t {
 		if (numSolutions() > 0)
@@ -258,6 +262,9 @@ moveit::core::MoveItErrorCode Task::plan(size_t max_solutions) {
 		if (impl->introspection_)
 			impl->introspection_->publishTaskState();
 	};
+
+	pybind11::gil_scoped_acquire acquire;
+
 	return success_or(moveit::core::MoveItErrorCode::PLANNING_FAILED);
 }
 
