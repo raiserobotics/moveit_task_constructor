@@ -77,6 +77,7 @@ public:
 	bool canCompute() const override;
 
 	void compute() override;
+	void compute_upstream_solution(const SolutionBase& s);
 
 	void setEndEffector(const std::string& eef) { setProperty("eef", eef); }
 	void setGroup(const std::string& group) { setProperty("group", group); }

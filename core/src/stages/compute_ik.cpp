@@ -229,11 +229,12 @@ void ComputeIK::compute() {
 	if (WrapperBase::canCompute())
 		WrapperBase::compute();
 
-	if (upstream_solutions_.empty())
-		return;
-
-	const SolutionBase& s = *upstream_solutions_.pop();
-
+	while (!upstream_solutions_.empty()) {
+		compute_upstream_solution(*upstream_solutions_.pop());
+	}
+}
+	
+void ComputeIK::compute_upstream_solution(const SolutionBase& s) {
 	// -1 TODO: this should not be necessary in my opinion: Why do you think so?
 	// It is, because the properties on the interface might change from call to call...
 	// enforced initialization from interface ensures that new target_pose is read
